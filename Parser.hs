@@ -23,7 +23,8 @@ m -# n = error "-# not implemented"
 m #- n = error "#- not implemented"
 
 spaces :: Parser String
-spaces =  error "spaces not implemented"
+spaces [] = fail []
+spaces xs = return (takeWhile isSpace xs) (dropWhile isSpace xs)
 
 token :: Parser a -> Parser a
 token m = m #- spaces
@@ -31,7 +32,7 @@ token m = m #- spaces
 letter :: Parser Char
 letter [] = fail []
 letter (x:xs) 
-    | x >= 'A' && x <= 'z' = return x xs 
+    | isAlpha x = return x xs 
     | otherwise = fail xs   
 
 word :: Parser String
