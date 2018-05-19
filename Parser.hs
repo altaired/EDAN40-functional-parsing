@@ -23,7 +23,6 @@ m -# n = (m # n) >-> snd
 m #- n = (m # n) >-> fst
 
 spaces :: Parser String
-spaces [] = fail []
 spaces xs = return (takeWhile isSpace xs) (dropWhile isSpace xs)
 
 token :: Parser a -> Parser a
@@ -48,7 +47,6 @@ accept w = (token (chars (length w))) ? (==w)
 
 require :: String -> Parser String
 require w = accept w ! err w
-
 
 lit :: Char -> Parser Char
 lit c = token char ? (==c)
