@@ -17,7 +17,7 @@ iter m = m # iter m >-> cons ! return []
 cons(a, b) = a:b
 
 (-#) :: Parser a -> Parser b -> Parser b
-m -# n = error "-# not implemented"
+m -# n = 
 
 (#-) :: Parser a -> Parser b -> Parser a
 m #- n = error "#- not implemented"
@@ -47,7 +47,7 @@ accept :: String -> Parser String
 accept w = (token (chars (length w))) ? (==w)
 
 require :: String -> Parser String
-require w  = error "require not implemented"
+require w = accept w : fail w
 
 lit :: Char -> Parser Char
 lit c = token char ? (==c)
