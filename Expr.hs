@@ -23,8 +23,9 @@ module Expr(Expr, T, parse, fromString, value, toString) where
    value e env evaluates e in an environment env that is represented by a
    Dictionary.T Int.  
 -}
-import Prelude hiding (return, fail)
+import Prelude hiding (return, fail, lookup)
 import Parser hiding (T)
+import Dictionary (lookup)
 import qualified Dictionary
 
 data Expr = Num Integer | Var String | Add Expr Expr 
@@ -71,7 +72,16 @@ shw prec (Mul t u) = parens (prec>6) (shw 6 t ++ "*" ++ shw 6 u)
 shw prec (Div t u) = parens (prec>6) (shw 6 t ++ "/" ++ shw 7 u)
 
 value :: Expr -> Dictionary.T String Integer -> Integer
-value (Num n) _ = error "value not implemented"
+value (Num n) _ = n
+value (Var n) d = case lookup n d of
+  Nothing -> error ("Expr.value: undefined variable "++n++"'\n")
+  Just x -> x
+value (Add t u) d = (value t d) + (value u d)
+value (Sub t u) d = (value t d) - (value u d)
+value (Mul t u) d = (value t d) * (value u d)
+value (Div t u) d = case value u d of
+  0 -> error "Expr.value: division by 0"
+  x -> quot (value t d) x
 
 instance Parse Expr where
     parse = expr
