@@ -3,15 +3,16 @@ import Parser hiding (T)
 import qualified Statement
 import qualified Dictionary
 import Prelude hiding (return, fail)
-newtype T = Program [Statement.T]
+newtype T = Program [Statement.T] deriving (Show)
 instance Parse T where
   parse = iter Statement.parse >-> Program
-  toString = Statement.toString
+  toString = shw
 
-shw :: [Statement.T] -> String
-shw = concat . map Statement.toString
+shw :: T -> String
+shw (Program stmts) = concatMap Statement.toString stmts
 
-prnt :: [Statement.T] -> IO ()
-prnt stmts = putStr $ shw stmts
-             
-exec = error "Program.exec not implemented"
+prnt :: T -> IO ()
+prnt prgm = putStr $ shw prgm
+
+exec :: T -> [Integer] -> [Integer]
+exec (Program stmts) = Statement.exec stmts Dictionary.empty
