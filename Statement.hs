@@ -40,9 +40,21 @@ begin = accept "begin" -# parse #- require "end"
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec (If cond thenStmts elseStmts: stmts) dict input = 
-    if (Expr.value cond dict)>0 
-    then exec (thenStmts: stmts) dict input
-    else exec (elseStmts: stmts) dict input
+  if (Expr.value cond dict)>0 
+  then exec (thenStmts: stmts) dict input
+  else exec (elseStmts: stmts) dict input
+exec (Assignment name expr: stmts) dict input = exec stmts nextDict input
+  where nextDict = Dictionary.insert (name, Expr.value expr dict) dict
+exec (Skip: stmts) dict input = exec stmts dict input
+exec (While cond block: stmts) dict input =
+  if (Expr.value cond dict)>0 
+  then exec (block: (While cond block): stmts) dict input
+  else exec stmts dict input
+exec (Read name: stmts) dict (i:input) = exec stmts nextDict input
+  where nextDict = Dictionary.insert (name, i) dict
+exec (Write expr: stmts) dict input = (Expr.value expr dict):(exec stmts dict input)
+exec (Begin statement:stmts) dict input = exec (statement:stmts) dict input
+
 
 instance Parse Statement where
   parse = assignment ! myIf ! skip ! while ! read ! write ! begin
