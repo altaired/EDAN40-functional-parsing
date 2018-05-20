@@ -43,7 +43,7 @@ chars n xs
   | otherwise = fail xs
 
 ignore :: Parser String
-ignore xs = return "" ""
+ignore xs = return "" (dropWhile (/='\n') xs)
 
 accept :: String -> Parser String
 accept w = (token (chars (length w))) ? (==w)

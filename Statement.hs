@@ -37,7 +37,7 @@ write = accept "write" -# Expr.parse #- require ";"
 begin = accept "begin" -# iter parse #- require "end"
   >-> \x -> Begin x
 
-comment = accept "--" #- ignore
+comment = accept "--" -# ignore #- require "\n"
   >-> \x -> Skip
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]

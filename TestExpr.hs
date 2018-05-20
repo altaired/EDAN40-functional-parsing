@@ -18,5 +18,6 @@ n21 = testValue "1/(2-y)" {-  Expr.value: division by 0 -}
 n31 = testValue "2+z"     {-  Expr.value: undefined variable z -}
 n42 = testValue "2^2"
 n24 = testValue "(2 + x)^y"
+n25 = testValue "2^y+y^2+x^y"
 
 
