@@ -85,7 +85,7 @@ shw i (Write expr) =
 
 shw i (Begin statements) =
   ind i ++ "begin\n" ++
-              concat (map (shw (i+1)) statements) ++
+              concatMap (shw (i+1)) statements ++
   ind i ++ "end\n"
 
 instance Parse Statement where
