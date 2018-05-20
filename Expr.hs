@@ -74,7 +74,7 @@ shw prec (Div t u) = parens (prec>6) (shw 6 t ++ "/" ++ shw 7 u)
 value :: Expr -> Dictionary.T String Integer -> Integer
 value (Num n) _ = n
 value (Var n) d = case lookup n d of
-  Nothing -> error ("Expr.value: undefined variable "++n++"'\n")
+  Nothing -> error ("Expr.value: undefined variable "++n++"\n")
   Just x -> x
 value (Add t u) d = (value t d) + (value u d)
 value (Sub t u) d = (value t d) - (value u d)

@@ -11,7 +11,7 @@ data Statement =
     While Expr.T Statement |
     Read String |
     Write Expr.T |
-    Begin [Statement]
+    Begin Statement
     deriving Show
 
 assignment = word #- accept ":=" # Expr.parse #- require ";"
@@ -34,7 +34,9 @@ read = accept "read" -# word #- require ";"
 write = accept "write" -# Expr.parse #- require ";"
   >-> \x -> Write x
 
--- TODO: begin
+-- TODO: multiple statements
+begin = accept "begin" -# parse #- require "end"
+  >-> \x -> Begin x
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec (If cond thenStmts elseStmts: stmts) dict input = 
@@ -43,5 +45,5 @@ exec (If cond thenStmts elseStmts: stmts) dict input =
     else exec (elseStmts: stmts) dict input
 
 instance Parse Statement where
-  parse = assignment ! myIf ! skip ! while ! read ! write
+  parse = assignment ! myIf ! skip ! while ! read ! write ! begin
   toString = error "Statement.toString not implemented"
