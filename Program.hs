@@ -14,4 +14,5 @@ shw (Program stmts) = concatMap Statement.toString stmts
 prnt :: T -> IO ()
 prnt prgm = putStr $ shw prgm
 
+exec :: T -> [Integer] -> [Integer]
 exec (Program stmts) = Statement.exec stmts Dictionary.empty
