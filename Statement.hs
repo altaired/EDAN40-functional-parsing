@@ -57,7 +57,37 @@ exec (Read name: stmts) dict (i:input) = exec stmts nextDict input
 exec (Write expr: stmts) dict input = (Expr.value expr dict):(exec stmts dict input)
 exec (Begin statements:stmts) dict input = exec (statements++stmts) dict input
 
+ind :: Int -> String
+ind i = replicate (i * 2) ' '
+
+shw :: Int -> Statement -> String
+shw i (Assignment name expr) =
+  (ind i)   ++ name ++ " := " ++ (Expr.toString expr) ++ ";\n"
+
+shw i (If cond thenStmts elseStmts) =
+  ind i ++ "if " ++ (Expr.toString cond) ++ "then\n" ++
+              (shw (i+1) thenStmts) ++
+  ind i ++ "else\n" ++
+              (shw (i+1) elseStmts)
+
+shw i Skip =
+  ind i ++ "skip;\n"
+
+shw i (While cond block) =
+  ind i ++ "while " ++ (Expr.toString cond) ++ " do\n" ++
+              (shw (i+1) block)
+
+shw i (Read name) =
+  ind i ++ "read " ++ name ++ ";\n"
+
+shw i (Write expr) =
+  ind i ++ "write " ++ (Expr.toString expr) ++ ";\n"
+
+shw i (Begin statements) =
+  ind i ++ "begin\n" ++
+              concat (map (shw (i+1)) statements) ++
+  ind i ++ "end\n"
 
 instance Parse Statement where
   parse = assignment ! myIf ! skip ! while ! read ! write ! begin ! comment
-  toString = error "Statement.toString not implemented"
+  toString = shw 0
