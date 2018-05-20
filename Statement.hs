@@ -38,6 +38,9 @@ write = accept "write" -# Expr.parse #- require ";"
 begin = accept "begin" -# parse #- require "end"
   >-> \x -> Begin x
 
+comment = accept "--" #- ignore
+  >-> \x -> Skip
+
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec (If cond thenStmts elseStmts: stmts) dict input = 
   if (Expr.value cond dict)>0 
@@ -57,5 +60,5 @@ exec (Begin statement:stmts) dict input = exec (statement:stmts) dict input
 
 
 instance Parse Statement where
-  parse = assignment ! myIf ! skip ! while ! read ! write ! begin
+  parse = assignment ! myIf ! skip ! while ! read ! write ! begin ! comment
   toString = error "Statement.toString not implemented"

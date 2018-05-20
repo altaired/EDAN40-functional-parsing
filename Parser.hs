@@ -1,6 +1,6 @@
 module Parser(module CoreParser, T, digit, digitVal, chars, letter, err,
               lit, number, iter, accept, require, token,
-              spaces, word, (-#), (#-)) where
+              spaces, word, (-#), (#-), ignore) where
 import Prelude hiding (return, fail)
 import Data.Char
 import CoreParser
@@ -41,6 +41,9 @@ chars :: Int -> Parser String
 chars n xs
   | n <= length xs = return (take n xs) (drop n xs)
   | otherwise = fail xs
+
+ignore :: Parser String
+ignore xs = return "" ""
 
 accept :: String -> Parser String
 accept w = (token (chars (length w))) ? (==w)
