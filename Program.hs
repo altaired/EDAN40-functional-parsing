@@ -14,4 +14,4 @@ shw (Program stmts) = concatMap Statement.toString stmts
 prnt :: T -> IO ()
 prnt prgm = putStr $ shw prgm
 
-exec = error "Program.exec not implemented"
+exec (Program stmts) = Statement.exec stmts Dictionary.empty
