@@ -11,7 +11,7 @@ data Statement =
     While Expr.T Statement |
     Read String |
     Write Expr.T |
-    Begin Statement
+    Begin [Statement]
     deriving Show
 
 assignment = word #- accept ":=" # Expr.parse #- require ";"
@@ -34,8 +34,7 @@ read = accept "read" -# word #- require ";"
 write = accept "write" -# Expr.parse #- require ";"
   >-> \x -> Write x
 
--- TODO: multiple statements
-begin = accept "begin" -# parse #- require "end"
+begin = accept "begin" -# iter parse #- require "end"
   >-> \x -> Begin x
 
 comment = accept "--" #- ignore
@@ -56,7 +55,7 @@ exec (While cond block: stmts) dict input =
 exec (Read name: stmts) dict (i:input) = exec stmts nextDict input
   where nextDict = Dictionary.insert (name, i) dict
 exec (Write expr: stmts) dict input = (Expr.value expr dict):(exec stmts dict input)
-exec (Begin statement:stmts) dict input = exec (statement:stmts) dict input
+exec (Begin statements:stmts) dict input = exec (statements++stmts) dict input
 
 
 instance Parse Statement where
