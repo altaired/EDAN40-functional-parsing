@@ -66,7 +66,7 @@ shw i (Assignment name expr) =
   (ind i)   ++ name ++ " := " ++ (Expr.toString expr) ++ ";\n"
 
 shw i (If cond thenStmts elseStmts) =
-  ind i ++ "if " ++ (Expr.toString cond) ++ "then\n" ++
+  ind i ++ "if " ++ (Expr.toString cond) ++ " then\n" ++
               (shw (i+1) thenStmts) ++
   ind i ++ "else\n" ++
               (shw (i+1) elseStmts)
